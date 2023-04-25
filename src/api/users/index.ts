@@ -5,7 +5,7 @@ import { createAccessToken, createRefreshToken } from "../../lib/auth/tools";
 import { JWTTokenAuth, UserRequest } from "../../lib/auth/jwt";
 import { avatarUploader } from "../../lib/cloudinary";
 import passport from "passport";
-import { googleRedirectRequest } from "../../types";
+import { IGoogleLoginRequest } from "../../lib/auth/googleOAuth";
 
 const UsersRouter = Express.Router();
 
@@ -30,14 +30,14 @@ UsersRouter.post("/register", async (req, res, next)=> {
 })
 
 //Login
-UsersRouter.post("/session", async (req, res, next)=> {
+UsersRouter.post("/login", async (req, res, next)=> {
     try {
         const {email, password} = req.body;
         const user = await UsersModel.checkCredentials(email, password)
         if(user) {
             const payload = {_id: user._id, email: user.email}
             const accessToken = await createAccessToken(payload)
-            const refreshToken = await createAccessToken(payload)
+            const refreshToken = await createRefreshToken(payload)
             res.send({user, accessToken, refreshToken})
         } else  {
             next(createHttpError(401, "Creditentials are wrong!"));
@@ -49,7 +49,7 @@ UsersRouter.post("/session", async (req, res, next)=> {
 
 //Login with Google
 UsersRouter.get(
-    "/session/googleRedirect",
+    "/login/googleRedirect",
     passport.authenticate("google", {
       session: false,
       scope: ["profile", "email"],
@@ -58,7 +58,7 @@ UsersRouter.get(
       try {
         res.redirect(
           `${process.env.FE_DEV_URL}/app?accessToken=${
-            (req.user as googleRedirectRequest).accessToken
+            (req.user as IGoogleLoginRequest).accessToken
           }`
         );
         console.log(req.user);
@@ -69,7 +69,7 @@ UsersRouter.get(
   );
   
   // Log out
-  UsersRouter.delete("/session", JWTTokenAuth, async (req, res, next) => {
+  UsersRouter.delete("/delete", JWTTokenAuth, async (req, res, next) => {
     try {
       await UsersModel.findByIdAndUpdate((req as UserRequest).user!._id, {
         refreshToken: "",

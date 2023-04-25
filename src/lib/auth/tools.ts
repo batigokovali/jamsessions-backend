@@ -1,19 +1,33 @@
 import createHttpError, { HttpError } from "http-errors";
 import jwt from "jsonwebtoken";
 import UsersModel from "../../api/users/model";
-import { UserDoc } from "../../api/users/types";
+import { IUserDocument } from "../../interfaces/IUser";
 
 export interface TokenPayload {
   _id: string;
   email: string;
 }
 
+export const createTokens = async (user: IUserDocument) => {
+  const accessToken = await createAccessToken({
+    _id: user._id,
+    email: user.email,
+  });
+  const refreshToken = await createRefreshToken({
+    _id: user._id,
+    email: user.email,
+  });
+  user.refreshToken = refreshToken;
+  await user.save();
+  return { accessToken, refreshToken };
+};
+
 export const createAccessToken = (payload: TokenPayload): Promise<string> =>
   new Promise((resolve, reject) =>
     jwt.sign(
       payload,
       process.env.JWT_SECRET!,
-      { expiresIn: "15m" },
+      { expiresIn: "1h" },
       (err, token) => {
         if (err) reject(err);
         else resolve(token as string);
@@ -50,24 +64,10 @@ export const verifyRefreshToken = (token: string): Promise<TokenPayload> =>
     });
   });
 
-export const createTokens = async (user: UserDoc) => {
-  const accessToken = await createAccessToken({
-    _id: user._id,
-    email: user.email,
-  });
-  const refreshToken = await createRefreshToken({
-    _id: user._id,
-    email: user.email,
-  });
-  user.refreshToken = refreshToken;
-  await user.save();
-  return { accessToken, refreshToken };
-};
-
 export const verifyAndCreateNewTokens = async (currentRefreshToken: string) => {
   try {
     const { _id } = await verifyRefreshToken(currentRefreshToken);
-    const user = (await UsersModel.findById(_id)) as UserDoc;
+    const user = (await UsersModel.findById(_id)) as IUserDocument;
     if (!user) throw new createHttpError[404](`User with ${_id} not found!`);
     if (user.refreshToken && user.refreshToken === currentRefreshToken) {
       const { accessToken, refreshToken } = await createTokens(user);

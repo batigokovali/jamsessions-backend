@@ -1,23 +1,22 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
-import { UserDoc, UsersModel } from "./types";
-
-const { Schema, model } = mongoose;
+import { IUserDocument, IUsersModel } from "../../interfaces/IUser";
+import createHttpError from "http-errors";
 
 const UsersSchema = new Schema({
   username: { type: String, required: true },
-  email: { type: String, required: true },
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   avatar: {
     type: String,
     required: true,
     default: "https://musicalbrick.com/wp-content/uploads/2019/08/KTS-1.jpg",
   },
+  savedSessions: [{type: mongoose.Types.ObjectId, ref: "session"}],
+  createdSessions: [{type: mongoose.Types.ObjectId, ref: "session"}],
   refreshToken: { type: String },
-  googleID: { type: String },
-});
+  googleID: { type: String }
+})
 
 UsersSchema.pre("save", async function () {
   const newUser = this;
@@ -52,8 +51,8 @@ UsersSchema.static("checkCredentials", async function (email, plainPW) {
   if (user) {
     const passwordMatch = await bcrypt.compare(plainPW, user.password);
     if (passwordMatch) return user;
-    else return null;
-  } else return null;
+    else throw new createHttpError[401]("Wrong password!");
+  } else throw new createHttpError[401](`No user found!`);
 });
 
-export default model<UserDoc, UsersModel>("user", UsersSchema);
+export default model<IUserDocument, IUsersModel>("user", UsersSchema);
