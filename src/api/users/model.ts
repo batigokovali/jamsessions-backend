@@ -12,11 +12,13 @@ const UsersSchema = new Schema({
     required: true,
     default: "https://musicalbrick.com/wp-content/uploads/2019/08/KTS-1.jpg",
   },
-  savedSessions: [{type: mongoose.Types.ObjectId, ref: "session"}],
-  createdSessions: [{type: mongoose.Types.ObjectId, ref: "session"}],
+  savedSessions: [{ type: mongoose.Types.ObjectId, ref: "session" }],
+  createdSessions: [{ type: mongoose.Types.ObjectId, ref: "session" }],
   refreshToken: { type: String },
-  googleID: { type: String }
-})
+  location: { type: String },
+  role: [{ type: String }],
+  googleID: { type: String },
+});
 
 UsersSchema.pre("save", async function () {
   const newUser = this;

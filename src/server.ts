@@ -1,10 +1,17 @@
 import cors, { CorsOptions } from "cors";
 import express from "express";
 import createHttpError from "http-errors";
-import googleStrategy  from "./lib/auth/googleOAuth";
+import googleStrategy from "./lib/auth/googleOAuth";
 import passport from "passport";
-import { badRequestHandler, unauthorizedHandler, forbiddenHandler, notFoundHandler, genericErrorHandler } from "./errorHandlers";
+import {
+  badRequestHandler,
+  unauthorizedHandler,
+  forbiddenHandler,
+  notFoundHandler,
+  genericErrorHandler,
+} from "./errorHandlers";
 import UsersRouter from "./api/users";
+import FeedsRouter from "./api/feed";
 
 //Connection
 const expressServer = express();
@@ -32,7 +39,8 @@ expressServer.use(cors(corsOptions));
 expressServer.use(express.json());
 
 //Endpoints
-expressServer.use("/users", UsersRouter)
+expressServer.use("/users", UsersRouter);
+expressServer.use("/feed", FeedsRouter);
 
 //Error Handlers
 expressServer.use(badRequestHandler);
@@ -41,4 +49,4 @@ expressServer.use(forbiddenHandler);
 expressServer.use(notFoundHandler);
 expressServer.use(genericErrorHandler);
 
-export {expressServer}
+export { expressServer };

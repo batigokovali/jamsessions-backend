@@ -6,6 +6,8 @@ export interface IUser {
     avatar: string;
     savedsessionID: string;
     createdsessionID: string;
+    location: Location;
+    role: Array<string>;
     refreshToken: string;
   }
 
