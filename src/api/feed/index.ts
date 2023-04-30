@@ -75,9 +75,9 @@ FeedsRouter.get("/:feedID", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
-//Post a video to Feed
+//Post a media to Feed
 FeedsRouter.post(
-  "/:feedID/video",
+  "/:feedID/media",
   mediaUploader,
   JWTTokenAuth,
   async (req, res, next) => {

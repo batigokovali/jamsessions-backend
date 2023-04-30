@@ -1,15 +1,16 @@
 import { Model, Document } from "mongoose";
+import { ISession } from "./ISession";
 
 export interface IUser {
-    username: string;
-    email: string;
-    avatar: string;
-    savedsessionID: string;
-    createdsessionID: string;
-    location: Location;
-    role: Array<string>;
-    refreshToken: string;
-  }
+  username: string;
+  email: string;
+  avatar: string;
+  savedsessions: Array<string>;
+  createdsessions: Array<string>;
+  location: Location;
+  role: Array<string>;
+  refreshToken: string;
+}
 
 export interface IUserDocument extends IUser, Document {}
 

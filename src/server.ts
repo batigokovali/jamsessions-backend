@@ -12,6 +12,7 @@ import {
 } from "./errorHandlers";
 import UsersRouter from "./api/users";
 import FeedsRouter from "./api/feed";
+import SessionsRouter from "./api/sessions";
 
 //Connection
 const expressServer = express();
@@ -41,6 +42,7 @@ expressServer.use(express.json());
 //Endpoints
 expressServer.use("/users", UsersRouter);
 expressServer.use("/feed", FeedsRouter);
+expressServer.use("/sessions", SessionsRouter);
 
 //Error Handlers
 expressServer.use(badRequestHandler);

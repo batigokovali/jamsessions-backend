@@ -9,5 +9,4 @@ export interface IFeed {
 }
 
 export interface IFeedDocument extends IFeed, Document {}
-
 export interface IFeedsModel extends Model<IFeedDocument> {}

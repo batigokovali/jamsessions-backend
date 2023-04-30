@@ -1,17 +1,15 @@
 import { Model } from "mongoose";
 import { IUser } from "./IUser";
+import { IComment } from "./IComment";
 
 export interface ISession {
-    author: IUser;
-    content: {
-      title: string;
-      description: string;
-    };
-    comments: Comment[];
-    date: Date;
-    location: Location;
-  }
+  user: IUser;
+  title: string;
+  description: string;
+  comments: IComment[];
+  date: string;
+  geolocation: string;
+}
 
 export interface ISessionDocument extends ISession, Document {}
-
-export interface ISessionModel extends Model<ISessionDocument> {}
+export interface ISessionsModel extends Model<ISessionDocument> {}
