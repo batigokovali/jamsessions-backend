@@ -9,7 +9,7 @@ import { IGoogleLoginRequest } from "../../lib/auth/googleOAuth";
 
 const UsersRouter = Express.Router();
 
-//Sign Up
+//Sign Up ✅
 UsersRouter.post("/register", async (req, res, next) => {
   try {
     const emailInUse = await UsersModel.findOne({ email: req.body.email });
@@ -31,7 +31,7 @@ UsersRouter.post("/register", async (req, res, next) => {
   }
 });
 
-//Login
+//Login ✅
 UsersRouter.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -49,9 +49,9 @@ UsersRouter.post("/login", async (req, res, next) => {
   }
 });
 
-//Login with Google
+//Login with Google ✅
 UsersRouter.get(
-  "/login/googleRedirect",
+  "/login/googleLogin",
   passport.authenticate("google", {
     session: false,
     scope: ["profile", "email"],
@@ -70,7 +70,7 @@ UsersRouter.get(
   }
 );
 
-// Log out
+// Log out ✅
 UsersRouter.delete("/delete", JWTTokenAuth, async (req, res, next) => {
   try {
     await UsersModel.findByIdAndUpdate((req as IUserRequest).user!._id, {
@@ -82,7 +82,7 @@ UsersRouter.delete("/delete", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
-// Get profile info
+// Get profile info ✅
 UsersRouter.get("/me", JWTTokenAuth, async (req, res, next) => {
   try {
     const user = await UsersModel.findById((req as IUserRequest).user!._id);
@@ -92,7 +92,7 @@ UsersRouter.get("/me", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
-// Edit profile info
+// Edit profile info ✅
 UsersRouter.put("/me", JWTTokenAuth, async (req, res, next) => {
   try {
     const updatedUser = await UsersModel.findOneAndUpdate(
@@ -106,7 +106,7 @@ UsersRouter.put("/me", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
-// Get users by ID
+// Get users by ID ✅
 UsersRouter.get("/:userID", JWTTokenAuth, async (req, res, next) => {
   try {
     const user = await UsersModel.findById(req.params.userID);
@@ -120,9 +120,9 @@ UsersRouter.get("/:userID", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
-// Set an avatar
+// Set an avatar ✅
 UsersRouter.post(
-  "/profile/avatar",
+  "/me/avatar",
   avatarUploader,
   JWTTokenAuth,
   async (req, res, next) => {

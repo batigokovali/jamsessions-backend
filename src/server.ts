@@ -15,7 +15,7 @@ import FeedsRouter from "./api/feed";
 
 //Connection
 const expressServer = express();
-// passport.use("google", googleStrategy);
+passport.use("google", googleStrategy);
 
 //Cors
 const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL];

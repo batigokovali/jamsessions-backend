@@ -10,3 +10,13 @@ export const avatarUploader = multer({
     } as { folder: string },
   }),
 }).single("avatar");
+
+export const mediaUploader = multer({
+  storage: new CloudinaryStorage({
+    cloudinary,
+    params: {
+      resource_type: "auto",
+      folder: "jamsessions/feed/medias",
+    } as { folder: string },
+  }),
+}).single("media");

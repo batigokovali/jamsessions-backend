@@ -2,6 +2,7 @@ import Express from "express";
 import FeedsModel from "./model";
 import { IUserRequest, JWTTokenAuth } from "../../lib/auth/jwt";
 import createHttpError from "http-errors";
+import { mediaUploader } from "../../lib/cloudinary";
 
 const FeedsRouter = Express.Router();
 
@@ -73,5 +74,22 @@ FeedsRouter.get("/:feedID", JWTTokenAuth, async (req, res, next) => {
     next(error);
   }
 });
+
+//Post a video to Feed
+FeedsRouter.post(
+  "/:feedID/video",
+  mediaUploader,
+  JWTTokenAuth,
+  async (req, res, next) => {
+    try {
+      await FeedsModel.findByIdAndUpdate(req.params.feedID, {
+        media: req.file?.path,
+      });
+      res.send({ mediaURL: req.file?.path });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default FeedsRouter;
