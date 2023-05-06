@@ -18,7 +18,6 @@ SessionsRouter.post("/", JWTTokenAuth, async (req, res, next) => {
     await UsersModel.findByIdAndUpdate((req as IUserRequest).user!._id, {
       $push: { createdSessions: session._id },
     });
-    // user?.createdsessions.push(newSession?._id.toString());
     res.status(201).send({ session });
   } catch (error) {
     next(error);
