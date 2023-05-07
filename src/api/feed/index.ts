@@ -65,7 +65,7 @@ FeedsRouter.delete("/:feedID", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
-//fetch a feed by ID
+//fetch a feed by ID from params
 FeedsRouter.get("/:feedID", JWTTokenAuth, async (req, res, next) => {
   try {
     const feed = await FeedsModel.findById(req.params.feedID);
@@ -75,16 +75,27 @@ FeedsRouter.get("/:feedID", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
+//fetch a feed by ID from body
+FeedsRouter.get("/", JWTTokenAuth, async (req, res, next) => {
+  try {
+    const feed = await FeedsModel.findById(req.body.feedID);
+    res.send(feed);
+  } catch (error) {
+    next(error);
+  }
+});
+
 //Post a media to Feed
 FeedsRouter.post(
-  "/:feedID/media",
+  "/media",
   mediaUploader,
   JWTTokenAuth,
   async (req, res, next) => {
     try {
-      await FeedsModel.findByIdAndUpdate(req.params.feedID, {
+      await FeedsModel.findByIdAndUpdate(req.body.feedID, {
         media: req.file?.path,
       });
+      console.log(req.body);
       res.send({ mediaURL: req.file?.path });
     } catch (error) {
       next(error);
@@ -92,4 +103,23 @@ FeedsRouter.post(
   }
 );
 
+//Post a media to Feed !!!TEST
+FeedsRouter.post(
+  "/media2",
+  mediaUploader,
+  JWTTokenAuth,
+  async (req, res, next) => {
+    try {
+      const newFeed = new FeedsModel({
+        user: (req as IUserRequest).user!._id,
+        media: req.file?.path,
+        ...req.body,
+      });
+      const feed = await newFeed.save();
+      res.status(201).send({ feed });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 export default FeedsRouter;
