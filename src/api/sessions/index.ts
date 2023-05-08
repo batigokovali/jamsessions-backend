@@ -3,9 +3,9 @@ import SessionsModel from "./model";
 import UsersModel from "../users/model";
 import { JWTTokenAuth, IUserRequest } from "../../lib/auth/jwt";
 import createHttpError from "http-errors";
-import { ISession } from "../../interfaces/ISession";
 
 const SessionsRouter = Express.Router();
+const q2m = require("query-to-mongo"); //new import syntax didn't work!
 
 //Post a Session
 SessionsRouter.post("/", JWTTokenAuth, async (req, res, next) => {
@@ -19,6 +19,22 @@ SessionsRouter.post("/", JWTTokenAuth, async (req, res, next) => {
       $push: { createdSessions: session._id },
     });
     res.status(201).send({ session });
+  } catch (error) {
+    next(error);
+  }
+});
+
+SessionsRouter.get("/", JWTTokenAuth, async (req, res, next) => {
+  try {
+    const mongoQuery = q2m(req.query);
+
+    const { sessions, total } = await SessionsModel.findAllSessions(mongoQuery);
+    res.send({
+      links: mongoQuery.links(process.env.FE_DEV_URL, total),
+      total,
+      numberOfPages: Math.ceil(total / mongoQuery.options.limit),
+      sessions,
+    });
   } catch (error) {
     next(error);
   }

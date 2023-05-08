@@ -13,4 +13,8 @@ export interface ISession {
 }
 
 export interface ISessionDocument extends ISession, Document {}
-export interface ISessionsModel extends Model<ISessionDocument> {}
+export interface ISessionsModel extends Model<ISessionDocument> {
+  findAllSessions(
+    query: any
+  ): Promise<{ sessions: ISessionDocument[]; total: number }>;
+}

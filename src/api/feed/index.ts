@@ -20,6 +20,18 @@ FeedsRouter.post("/", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
+//Get all feeds for logged in user
+FeedsRouter.get("/", JWTTokenAuth, async (req, res, next) => {
+  try {
+    const feeds = await FeedsModel.find({
+      user: (req as IUserRequest).user!._id,
+    });
+    res.send(feeds);
+  } catch (error) {
+    next(error);
+  }
+});
+
 //Edit a feed
 FeedsRouter.put("/:feedID", JWTTokenAuth, async (req, res, next) => {
   try {
@@ -85,27 +97,27 @@ FeedsRouter.get("/", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
+// //Post a media to Feed
+// FeedsRouter.post(
+//   "/media",
+//   mediaUploader,
+//   JWTTokenAuth,
+//   async (req, res, next) => {
+//     try {
+//       await FeedsModel.findByIdAndUpdate(req.body.feedID, {
+//         media: req.file?.path,
+//       });
+//       console.log(req.body);
+//       res.send({ mediaURL: req.file?.path });
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+
 //Post a media to Feed
 FeedsRouter.post(
   "/media",
-  mediaUploader,
-  JWTTokenAuth,
-  async (req, res, next) => {
-    try {
-      await FeedsModel.findByIdAndUpdate(req.body.feedID, {
-        media: req.file?.path,
-      });
-      console.log(req.body);
-      res.send({ mediaURL: req.file?.path });
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-//Post a media to Feed !!!TEST
-FeedsRouter.post(
-  "/media2",
   mediaUploader,
   JWTTokenAuth,
   async (req, res, next) => {

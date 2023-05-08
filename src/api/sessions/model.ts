@@ -14,6 +14,17 @@ const SessionsSchema = new Schema({
   geolocation: { type: String },
 });
 
+SessionsSchema.statics.findAllSessions = async function (query) {
+  console.log("THIS:", this);
+  const sessions = await this.find(query.criteria, query.options.fields)
+    .limit(query.options.limit)
+    .skip(query.options.skip)
+    .sort(query.options.sort)
+    .populate({ path: "user", select: "username" });
+  const total = await this.countDocuments(query.criteria);
+  return { sessions, total };
+};
+
 export default model<ISessionDocument, ISessionsModel>(
   "session",
   SessionsSchema

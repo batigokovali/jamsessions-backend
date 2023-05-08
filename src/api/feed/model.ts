@@ -11,4 +11,6 @@ const FeedsSchema = new Schema(
   { timestamps: true }
 );
 
+// FeedsSchema.statics.findAll
+
 export default model<IFeedDocument, IFeedsModel>("feed", FeedsSchema);

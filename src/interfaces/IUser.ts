@@ -1,5 +1,4 @@
 import { Model, Document } from "mongoose";
-import { ISession } from "./ISession";
 
 export interface IUser {
   username: string;
