@@ -32,6 +32,18 @@ FeedsRouter.get("/", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
+//Get all feeds for a user
+FeedsRouter.get("/user/:userID", JWTTokenAuth, async (req, res, next) => {
+  try {
+    const feeds = await FeedsModel.find({
+      user: req.params.userID,
+    });
+    res.send(feeds);
+  } catch (error) {
+    next(error);
+  }
+});
+
 //Edit a feed
 FeedsRouter.put("/:feedID", JWTTokenAuth, async (req, res, next) => {
   try {

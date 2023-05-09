@@ -24,6 +24,7 @@ SessionsRouter.post("/", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
+//Get logged in user's sessions
 SessionsRouter.get("/", JWTTokenAuth, async (req, res, next) => {
   try {
     const mongoQuery = q2m(req.query);
@@ -35,6 +36,18 @@ SessionsRouter.get("/", JWTTokenAuth, async (req, res, next) => {
       numberOfPages: Math.ceil(total / mongoQuery.options.limit),
       sessions,
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+//Get single session by session ID
+SessionsRouter.get("/:sessionID", JWTTokenAuth, async (req, res, next) => {
+  try {
+    const session = await SessionsModel.find({
+      _id: req.params.sessionID,
+    });
+    res.send(session);
   } catch (error) {
     next(error);
   }
