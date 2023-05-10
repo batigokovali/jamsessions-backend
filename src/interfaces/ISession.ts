@@ -8,6 +8,7 @@ export interface ISession {
   description: string;
   date: Date;
   role: Array<string>;
+  genre: Array<string>;
   geolocation: string;
   comments: IComment[];
 }

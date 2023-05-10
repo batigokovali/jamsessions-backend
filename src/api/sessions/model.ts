@@ -10,12 +10,12 @@ const SessionsSchema = new Schema({
     { comment: { type: String } },
   ],
   role: [{ type: String }],
+  genre: [{ type: String }],
   date: { type: Date, required: true },
   geolocation: { type: String },
 });
 
 SessionsSchema.statics.findAllSessions = async function (query) {
-  console.log("THIS:", this);
   const sessions = await this.find(query.criteria, query.options.fields)
     .limit(query.options.limit)
     .skip(query.options.skip)

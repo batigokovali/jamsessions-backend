@@ -24,11 +24,14 @@ SessionsRouter.post("/", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
-//Get logged in user's sessions
+//Get all sessions
 SessionsRouter.get("/", JWTTokenAuth, async (req, res, next) => {
   try {
     const mongoQuery = q2m(req.query);
-
+    const roleQuery = {
+      role: { $in: req.query.role },
+    };
+    console.log(roleQuery);
     const { sessions, total } = await SessionsModel.findAllSessions(mongoQuery);
     res.send({
       links: mongoQuery.links(process.env.FE_DEV_URL, total),
