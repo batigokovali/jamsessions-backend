@@ -7,6 +7,8 @@ import { avatarUploader } from "../../lib/cloudinary";
 import passport from "passport";
 import { IGoogleLoginRequest } from "../../lib/auth/googleOAuth";
 
+const q2m = require("query-to-mongo");
+
 const UsersRouter = Express.Router();
 
 //Sign Up ✅
@@ -85,8 +87,9 @@ UsersRouter.delete("/delete", JWTTokenAuth, async (req, res, next) => {
 // Get profile info ✅
 UsersRouter.get("/me", JWTTokenAuth, async (req, res, next) => {
   try {
-    const user = await UsersModel.findById((req as IUserRequest).user!._id);
-    res.send(user);
+    const mongoQuery = (req as IUserRequest).user!._id;
+    const { user } = await UsersModel.SavedAndCreatedSessions(mongoQuery);
+    res.send({ user });
   } catch (error) {
     next(error);
   }

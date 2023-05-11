@@ -24,6 +24,19 @@ SessionsRouter.post("/", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
+//Save a session
+SessionsRouter.post("/:sessionID", JWTTokenAuth, async (req, res, next) => {
+  try {
+    const savedSession = await SessionsModel.findById(req.params.sessionID);
+    await UsersModel.findByIdAndUpdate((req as IUserRequest).user!._id, {
+      $push: { savedSessions: savedSession?._id },
+    });
+    res.send("Session saved!");
+  } catch (error) {
+    next(error);
+  }
+});
+
 //Get all sessions
 SessionsRouter.get("/", JWTTokenAuth, async (req, res, next) => {
   try {

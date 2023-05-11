@@ -2,6 +2,7 @@ import mongoose, { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import { IUserDocument, IUsersModel } from "../../interfaces/IUser";
 import createHttpError from "http-errors";
+import { JWTTokenAuth, IUserRequest } from "../../lib/auth/jwt";
 
 const UsersSchema = new Schema({
   username: { type: String, required: true },
@@ -46,6 +47,18 @@ UsersSchema.methods.toJSON = function () {
   delete currentUser.updatedAt;
   delete currentUser.__v;
   return currentUser;
+};
+
+UsersSchema.statics.SavedAndCreatedSessions = async function (query) {
+  const user = await this.findById(query).populate({
+    path: "savedSessions createdSessions",
+    populate: {
+      path: "user",
+      select: "_id username avatar",
+    },
+    select: "_id user title description role date ",
+  });
+  return { user };
 };
 
 UsersSchema.static("checkCredentials", async function (email, plainPW) {
