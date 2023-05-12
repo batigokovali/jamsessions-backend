@@ -6,8 +6,8 @@ export interface IUser {
   username: string;
   email: string;
   avatar: string;
-  savedsessions: Array<ISession>;
-  createdsessions: Array<ISession>;
+  savedSessions: Array<ISession>;
+  createdSessions: Array<ISession>;
   location: Location;
   role: Array<string>;
   refreshToken: string;

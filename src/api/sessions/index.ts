@@ -28,23 +28,46 @@ SessionsRouter.post("/", JWTTokenAuth, async (req, res, next) => {
 SessionsRouter.post("/:sessionID", JWTTokenAuth, async (req, res, next) => {
   try {
     const savedSession = await SessionsModel.findById(req.params.sessionID);
-    await UsersModel.findByIdAndUpdate((req as IUserRequest).user!._id, {
-      $push: { savedSessions: savedSession?._id },
+    const check = await UsersModel.find({
+      savedSessions: { _id: req.params.sessionID },
     });
-    res.send("Session saved!");
+    console.log(check);
+    if (
+      check.some((user) =>
+        user.savedSessions.some(
+          (session) => session._id.toString() === req.params.sessionID
+        )
+      )
+    ) {
+      await UsersModel.findByIdAndUpdate(
+        (req as IUserRequest).user!._id,
+        {
+          $pull: { savedSessions: savedSession?._id },
+        },
+        { new: true }
+      );
+      res.send(`Session with ID ${req.params.sessionID} is removed!`);
+    } else {
+      await UsersModel.findByIdAndUpdate(
+        (req as IUserRequest).user!._id,
+        {
+          $push: { savedSessions: savedSession?._id },
+        },
+        { new: true }
+      );
+      res.send(`Session with ID ${req.params.sessionID} is saved!`);
+    }
   } catch (error) {
     next(error);
   }
 });
 
+//Remove a saved session
+
 //Get all sessions
 SessionsRouter.get("/", JWTTokenAuth, async (req, res, next) => {
   try {
     const mongoQuery = q2m(req.query);
-    const roleQuery = {
-      role: { $in: req.query.role },
-    };
-    console.log(roleQuery);
     const { sessions, total } = await SessionsModel.findAllSessions(mongoQuery);
     res.send({
       links: mongoQuery.links(process.env.FE_DEV_URL, total),

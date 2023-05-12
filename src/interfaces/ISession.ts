@@ -11,6 +11,7 @@ export interface ISession {
   genre: Array<string>;
   geolocation: string;
   comments: IComment[];
+  _id: string;
 }
 
 export interface ISessionDocument extends ISession, Document {}
