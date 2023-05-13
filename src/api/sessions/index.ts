@@ -92,6 +92,7 @@ SessionsRouter.get("/:sessionID", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
+//Edit a session
 SessionsRouter.put("/:sessionID", JWTTokenAuth, async (req, res, next) => {
   try {
     const session = await SessionsModel.findById(req.params.sessionID);
@@ -112,6 +113,25 @@ SessionsRouter.put("/:sessionID", JWTTokenAuth, async (req, res, next) => {
           "This user does not have the permission to edit the session!"
         )
       );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+//Delete a session
+SessionsRouter.delete("/:sessionID", JWTTokenAuth, async (req, res, next) => {
+  try {
+    const session = await SessionsModel.findById(req.params.sessionID);
+    if (session?.user.toString() === (req as IUserRequest).user!._id) {
+      const deletedSession = await SessionsModel.findById(req.params.sessionID);
+      await UsersModel.findByIdAndUpdate((req as IUserRequest).user!._id, {
+        $pull: { createdSessions: deletedSession!._id },
+      });
+      await SessionsModel.findByIdAndDelete(req.params.sessionID);
+      res
+        .status(200)
+        .send(`Session with ID ${req.params.sessionID} has been deleted!`);
     }
   } catch (error) {
     next(error);

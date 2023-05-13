@@ -56,7 +56,7 @@ UsersSchema.statics.SavedAndCreatedSessions = async function (query) {
       path: "user",
       select: "_id username avatar",
     },
-    select: "_id user title description role date ",
+    select: "_id user title description role genre date ",
   });
   return { user };
 };
