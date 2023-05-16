@@ -16,7 +16,7 @@ const UsersSchema = new Schema({
   savedSessions: [{ type: mongoose.Types.ObjectId, ref: "session" }],
   createdSessions: [{ type: mongoose.Types.ObjectId, ref: "session" }],
   refreshToken: { type: String },
-  location: { type: String },
+  location: { lat: { type: String }, lng: { type: String } },
   role: [{ type: String }],
   googleID: { type: String },
 });

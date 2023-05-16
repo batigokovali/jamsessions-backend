@@ -1,6 +1,7 @@
 import { Date, Model } from "mongoose";
 import { IUser } from "./IUser";
 import { IComment } from "./IComment";
+import { ILocation } from "./ILocation";
 
 export interface ISession {
   user: IUser;
@@ -9,12 +10,12 @@ export interface ISession {
   date: Date;
   role: Array<string>;
   genre: Array<string>;
-  geolocation: string;
+  location: ILocation;
   comments: IComment[];
   _id: string;
 }
 
-export interface ISessionDocument extends ISession, Document {}
+export interface ISessionDocument extends ISession {}
 export interface ISessionsModel extends Model<ISessionDocument> {
   findAllSessions(
     query: any

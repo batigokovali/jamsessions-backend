@@ -29,7 +29,7 @@ SessionsRouter.post("/:sessionID", JWTTokenAuth, async (req, res, next) => {
   try {
     const savedSession = await SessionsModel.findById(req.params.sessionID);
     const check = await UsersModel.find({
-      savedSessions: { _id: req.params.sessionID },
+      _id: (req as IUserRequest).user!._id,
     });
     console.log(check);
     if (
@@ -39,22 +39,14 @@ SessionsRouter.post("/:sessionID", JWTTokenAuth, async (req, res, next) => {
         )
       )
     ) {
-      await UsersModel.findByIdAndUpdate(
-        (req as IUserRequest).user!._id,
-        {
-          $pull: { savedSessions: savedSession?._id },
-        },
-        { new: true }
-      );
+      await UsersModel.findByIdAndUpdate((req as IUserRequest).user!._id, {
+        $pull: { savedSessions: savedSession?._id },
+      });
       res.send(`Session with ID ${req.params.sessionID} is removed!`);
     } else {
-      await UsersModel.findByIdAndUpdate(
-        (req as IUserRequest).user!._id,
-        {
-          $push: { savedSessions: savedSession?._id },
-        },
-        { new: true }
-      );
+      await UsersModel.findByIdAndUpdate((req as IUserRequest).user!._id, {
+        $push: { savedSessions: savedSession?._id },
+      });
       res.send(`Session with ID ${req.params.sessionID} is saved!`);
     }
   } catch (error) {

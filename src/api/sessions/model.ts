@@ -12,7 +12,7 @@ const SessionsSchema = new Schema({
   role: [{ type: String }],
   genre: [{ type: String }],
   date: { type: Date, required: true },
-  geolocation: { type: String },
+  location: { lat: { type: Number }, lng: { type: Number } },
 });
 
 SessionsSchema.statics.findAllSessions = async function (query) {
