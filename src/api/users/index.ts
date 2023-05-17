@@ -96,14 +96,12 @@ UsersRouter.get("/me", JWTTokenAuth, async (req, res, next) => {
 });
 
 // Edit profile info ✅
-UsersRouter.put("/me", JWTTokenAuth, async (req, res, next) => {
+UsersRouter.put("/me", avatarUploader, JWTTokenAuth, async (req, res, next) => {
   try {
-    const updatedUser = await UsersModel.findOneAndUpdate(
-      { _id: (req as IUserRequest).user!._id },
-      req.body,
-      { new: true, runValidators: true }
-    );
-    res.send(updatedUser);
+    await UsersModel.findByIdAndUpdate((req as IUserRequest).user!._id, {
+      avatar: req.file?.path,
+      ...req.body,
+    });
   } catch (error) {
     next(error);
   }
