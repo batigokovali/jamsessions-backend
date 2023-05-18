@@ -16,7 +16,7 @@ const UsersSchema = new Schema({
   savedSessions: [{ type: mongoose.Types.ObjectId, ref: "session" }],
   createdSessions: [{ type: mongoose.Types.ObjectId, ref: "session" }],
   refreshToken: { type: String },
-  location: { lat: { type: String }, lng: { type: String } },
+  location: { lat: { type: Number }, lng: { type: Number } },
   role: [{ type: String }],
   googleID: { type: String },
 });
@@ -56,7 +56,7 @@ UsersSchema.statics.SavedAndCreatedSessions = async function (query) {
       path: "user",
       select: "_id username avatar",
     },
-    select: "_id user title description role genre date ",
+    select: "_id user title description role genre date location",
   });
   return { user };
 };

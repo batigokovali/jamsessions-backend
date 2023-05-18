@@ -8,7 +8,7 @@ export interface IUser {
   avatar: string;
   savedSessions: Array<ISession>;
   createdSessions: Array<ISession>;
-  location: { lat: string; lng: string };
+  location: { lat: number; lng: number };
   role: Array<string>;
   refreshToken: string;
 }
