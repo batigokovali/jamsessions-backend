@@ -77,6 +77,9 @@ SessionsRouter.get("/:sessionID", JWTTokenAuth, async (req, res, next) => {
   try {
     const session = await SessionsModel.find({
       _id: req.params.sessionID,
+    }).populate({
+      path: "user",
+      select: "_id username avatar",
     });
     res.send(session);
   } catch (error) {
