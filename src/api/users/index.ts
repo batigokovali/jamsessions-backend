@@ -6,6 +6,7 @@ import { JWTTokenAuth, IUserRequest } from "../../lib/auth/jwt";
 import { avatarUploader } from "../../lib/cloudinary";
 import passport from "passport";
 import { IGoogleLoginRequest } from "../../lib/auth/googleOAuth";
+import { IUser } from "../../interfaces/IUser";
 
 const q2m = require("query-to-mongo");
 
@@ -61,7 +62,7 @@ UsersRouter.get(
   async (req, res, next) => {
     try {
       res.redirect(
-        `${process.env.FE_DEV_URL}/app?accessToken=${
+        `${process.env.FE_DEV_URL}/home?accessToken=${
           (req.user as IGoogleLoginRequest).accessToken
         }`
       );
@@ -98,10 +99,15 @@ UsersRouter.get("/me", JWTTokenAuth, async (req, res, next) => {
 // Edit profile info ✅
 UsersRouter.put("/me", avatarUploader, JWTTokenAuth, async (req, res, next) => {
   try {
-    await UsersModel.findByIdAndUpdate((req as IUserRequest).user!._id, {
-      avatar: req.file?.path,
-      ...req.body,
-    });
+    const updatedUser = await UsersModel.findByIdAndUpdate(
+      (req as IUserRequest).user!._id,
+      {
+        avatar: req.file?.path,
+        ...req.body,
+      }
+    );
+    await updatedUser!.save();
+    res.send("Password changed successfully!");
   } catch (error) {
     next(error);
   }

@@ -109,24 +109,6 @@ FeedsRouter.get("/", JWTTokenAuth, async (req, res, next) => {
   }
 });
 
-// //Post a media to Feed
-// FeedsRouter.post(
-//   "/media",
-//   mediaUploader,
-//   JWTTokenAuth,
-//   async (req, res, next) => {
-//     try {
-//       await FeedsModel.findByIdAndUpdate(req.body.feedID, {
-//         media: req.file?.path,
-//       });
-//       console.log(req.body);
-//       res.send({ mediaURL: req.file?.path });
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// );
-
 //Post a media to Feed
 FeedsRouter.post(
   "/media",
@@ -146,4 +128,5 @@ FeedsRouter.post(
     }
   }
 );
+
 export default FeedsRouter;
